@@ -125,6 +125,18 @@
                         {% endfor %}
                     </div>
                 </div>
+                <!-- Add this section to display code execution results -->
+                <div class="execution-results card" style="display: none;" id="executionResults">
+                    <h2>Code Execution Results</h2>
+                    <div class="output-section">
+                        <h3>Text Output:</h3>
+                        <pre id="textOutput" class="output-console"></pre>
+                    </div>
+                    <div class="plots-section" id="plotsSection">
+                        <h3>Generated Plots:</h3>
+                        <!-- Plots will be inserted here -->
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -214,6 +226,51 @@ async function runSimulation() {
         }
         
         showToast('Error running simulation: ' + userMessage, 'error');
+    } finally {
+        setLoading(button, false);
+    }
+}
+</script>
+<script>
+async function executeCode() {
+    const circuitId = {{ circuit.id }};
+    const button = event.target;
+    
+    try {
+        setLoading(button, true);
+        
+        const response = await fetch(`/api/circuits/${circuitId}/execute_code/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Show text output
+            document.getElementById('textOutput').textContent = data.text_output;
+            
+            // Show plots
+            const plotsSection = document.getElementById('plotsSection');
+            if (data.plots && data.plots.length > 0) {
+                plotsSection.innerHTML = '<h3>Generated Plots:</h3>' + data.plots.join('');
+            } else {
+                plotsSection.innerHTML = '<h3>Generated Plots:</h3><p>No plots generated</p>';
+            }
+            
+            // Show results section
+            document.getElementById('executionResults').style.display = 'block';
+            
+            showToast('Code executed successfully!', 'success');
+        } else {
+            throw new Error(data.error || 'Failed to execute code');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Error executing code: ' + error.message, 'error');
     } finally {
         setLoading(button, false);
     }

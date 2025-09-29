@@ -18,14 +18,17 @@ urlpatterns = [
     path('circuits/<int:circuit_id>/simulation/', views.simulation_view, name='simulation'),
     path('qa/', views.qa_view, name='qa'),
     
-#     # API endpoints for specific actions
-#     path('api/circuits/<int:circuit_id>/parse/', 
-#          views.QuantumCircuitViewSet.as_view({'post': 'parse_circuit'}), 
-#          name='circuit-parse'),
-#     path('api/circuits/<int:circuit_id>/simulate/', 
-#          views.QuantumCircuitViewSet.as_view({'post': 'simulate'}), 
-#          name='circuit-simulate'),
-#     path('api/qa/ask/', 
-#          views.QASessionViewSet.as_view({'post': 'ask_question'}), 
-#          name='qa-ask'),
+    # API endpoints for specific actions
+    path('api/circuits/<int:circuit_id>/parse/', 
+         views.QuantumCircuitViewSet.as_view({'post': 'parse_circuit'}), 
+         name='circuit-parse'),
+    path('api/circuits/<int:circuit_id>/simulate/', 
+         views.QuantumCircuitViewSet.as_view({'post': 'simulate'}), 
+         name='circuit-simulate'),
+    path('api/qa/ask/', 
+         views.QASessionViewSet.as_view({'post': 'ask_question'}), 
+         name='qa-ask'),
+    path('api/circuits/<int:circuit_id>/execute_code/', 
+         views.QuantumCircuitViewSet.as_view({'post': 'execute_code'}), 
+         name='circuit-execute-code'),
 ]

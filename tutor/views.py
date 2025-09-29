@@ -89,10 +89,10 @@ class QuantumCircuitViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-    
+
     @action(detail=True, methods=['post'])
     def parse_circuit(self, request, pk=None):
-        """Parse Qiskit code and extract gates"""
+        """Parse Qiskit code and extract gates - SILENT VERSION"""
         circuit = self.get_object()
         
         # Check if user owns this circuit
@@ -105,7 +105,7 @@ class QuantumCircuitViewSet(viewsets.ModelViewSet):
         parser = CircuitParser()
         
         try:
-            # Parse the Qiskit code
+            # Parse the Qiskit code (this will now be silent)
             qiskit_circuit = parser.parse_qiskit_code(circuit.qiskit_code)
             
             # Update circuit information
@@ -135,7 +135,41 @@ class QuantumCircuitViewSet(viewsets.ModelViewSet):
                 {'error': str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
-    
+        
+    @action(detail=True, methods=['post'])
+    def execute_code(self, request, pk=None):
+        """Execute user Qiskit code and return results including plots"""
+        circuit = self.get_object()
+        
+        # Check if user owns this circuit
+        if circuit.user != request.user:
+            return Response(
+                {'error': 'Permission denied'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        simulator = CircuitSimulator()
+        
+        try:
+            # Execute user code
+            result = simulator.execute_user_code(circuit.qiskit_code)
+            
+            return Response({
+                'status': 'Code executed successfully',
+                'text_output': result['text_output'],
+                'plots': result['plots'],
+                'has_circuit': result['circuit'] is not None,
+                'statevector': result.get('statevector'),
+                'counts': result.get('counts')
+            })
+            
+        except Exception as e:
+            error_message = str(e)
+            return Response(
+                {'error': error_message}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
     @action(detail=True, methods=['post'])
     def simulate(self, request, pk=None):
         """Run simulation on the circuit"""
