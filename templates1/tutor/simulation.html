@@ -1,0 +1,102 @@
+{% extends 'tutor/base.html' %}
+
+{% block title %}Simulation - {{ circuit.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Simulation Results: {{ circuit.title }}</h2>
+
+    {% if simulation %}
+    <div class="space-y-6">
+        <!-- Statevector -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Quantum Statevector</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for state in simulation.statevector %}
+                <div class="border rounded p-3 {% if state.probability > 0.1 %}bg-blue-50{% endif %}">
+                    <div class="font-mono text-sm">
+                        <strong>|{{ state.state }}⟩</strong><br>
+                        Amplitude: {{ state.amplitude_real|floatformat:4 }} + {{ state.amplitude_imag|floatformat:4 }}i<br>
+                        Probability: <span class="font-semibold">{{ state.probability|floatformat:4 }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Probabilities Chart -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Measurement Probabilities</h3>
+            <canvas id="probabilityChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Counts -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Measurement Counts ({{ simulation.shots }} shots)</h3>
+            <div class="bg-gray-100 p-4 rounded">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {% for state, count in simulation.counts.items %}
+                    <div class="text-center p-2 bg-white rounded border">
+                        <div class="font-mono font-bold">|{{ state }}⟩</div>
+                        <div class="text-lg">{{ count }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+        <p>No simulation results available. Run the simulation first from the circuit detail page.</p>
+        <a href="{% url 'circuit_detail' circuit.id %}" class="text-blue-600 hover:underline mt-2 inline-block">
+            ← Back to Circuit
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if simulation %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('probabilityChart').getContext('2d');
+    const labels = [{% for state, prob in simulation.probabilities.items %}'|{{ state }}⟩'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const data = [{% for state, prob in simulation.probabilities.items %}{{ prob }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Probability',
+                data: data,
+                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1.0,
+                    title: {
+                        display: true,
+                        text: 'Probability'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Quantum States'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

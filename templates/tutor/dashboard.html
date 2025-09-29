@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Quantum Tutor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <div class="welcome-card card">
+            <div class="welcome-content">
+                <h1>Welcome to Quantum Tutor!</h1>
+                <p>Your AI-powered quantum computing learning platform</p>
+                <div class="user-info-badge">
+                    <span class="difficulty-level">{{ user.difficulty_level|title }}</span>
+                    <span class="username">{{ user.username }}</span>
+                </div>
+            </div>
+            <div class="welcome-actions">
+                <a href="{% url 'circuit_create' %}" class="btn btn-primary">
+                    <span class="btn-icon">⚡</span>
+                    Create New Circuit
+                </a>
+                <a href="{% url 'qa' %}" class="btn btn-secondary">
+                    <span class="btn-icon">🤖</span>
+                    Ask AI Tutor
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Grid -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <h3>{{ circuits_count }}</h3>
+                    <p>Quantum Circuits</p>
+                </div>
+            </div>
+            <div class="stat-card card">
+                <div class="stat-icon">🔬</div>
+                <div class="stat-content">
+                    <h3>{{ simulations_count }}</h3>
+                    <p>Simulations Run</p>
+                </div>
+            </div>
+            <div class="stat-card card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-content">
+                    <h3>{{ recent_qa|length }}</h3>
+                    <p>Recent Q&A</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <section class="main-grid">
+        <!-- Circuits Section -->
+        <div class="circuits-section">
+            <div class="section-header">
+                <h2>Your Quantum Circuits</h2>
+                <a href="{% url 'circuit_create' %}" class="btn btn-outline">
+                    <span class="btn-icon">+</span>
+                    New Circuit
+                </a>
+            </div>
+
+            {% if circuits %}
+            <div class="circuits-grid">
+                {% for circuit in circuits %}
+                <div class="circuit-card card">
+                    <div class="circuit-header">
+                        <h3>{{ circuit.title }}</h3>
+                        <span class="circuit-badge">{{ circuit.num_qubits }} qubit{{ circuit.num_qubits|pluralize }}</span>
+                    </div>
+                    <div class="circuit-info">
+                        <div class="circuit-stats">
+                            <span class="stat">{{ circuit.gates.count }} gates</span>
+                            {% if circuit.simulation %}
+                            <span class="stat simulated">Simulated</span>
+                            {% endif %}
+                        </div>
+                        <div class="circuit-date">
+                            Created: {{ circuit.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                    <div class="circuit-actions">
+                        <a href="{% url 'circuit_detail' circuit.id %}" class="btn btn-success btn-sm">
+                            View
+                        </a>
+                        <a href="{% url 'simulation' circuit.id %}" class="btn btn-primary btn-sm">
+                            Simulate
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state card">
+                <div class="empty-icon">⚛</div>
+                <h3>No circuits yet</h3>
+                <p>Create your first quantum circuit to get started!</p>
+                <a href="{% url 'circuit_create' %}" class="btn btn-primary">
+                    Create Your First Circuit
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Recent Activity -->
+            <div class="activity-card card">
+                <h3>Recent Activity</h3>
+                {% if recent_qa %}
+                <div class="activity-list">
+                    {% for qa in recent_qa %}
+                    <div class="activity-item">
+                        <div class="activity-icon">💬</div>
+                        <div class="activity-content">
+                            <p class="activity-text">{{ qa.question|truncatewords:8 }}</p>
+                            <span class="activity-time">{{ qa.created_at|timesince }} ago</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-activity">
+                    <p>No recent activity</p>
+                </div>
+                {% endif %}
+                <a href="{% url 'qa' %}" class="btn btn-outline btn-block">
+                    View All Activity
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-card card">
+                <h3>Quick Actions</h3>
+                <div class="actions-list">
+                    <a href="{% url 'circuit_create' %}" class="action-btn">
+                        <span class="action-icon">⚡</span>
+                        Create Circuit
+                    </a>
+                    <a href="{% url 'qa' %}" class="action-btn">
+                        <span class="action-icon">🤖</span>
+                        Ask AI Tutor
+                    </a>
+                    <button class="action-btn" onclick="showToast('Quiz feature coming soon!', 'info')">
+                        <span class="action-icon">📝</span>
+                        Take Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

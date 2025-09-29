@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Tutor - {% block title %}AI Quantum Computing Tutor{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Quantum Tutor</h1>
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <span>Welcome, {{ user.username }} ({{ user.difficulty_level }})</span>
+                    <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+                    <a href="{% url 'circuit_create' %}" class="hover:underline">Create Circuit</a>
+                    <a href="{% url 'admin:logout' %}" class="hover:underline">Logout</a>
+                {% else %}
+                    <a href="{% url 'admin:login' %}" class="hover:underline">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-8 p-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>Quantum Tutor - AI-Powered Quantum Computing Education</p>
+        </div>
+    </footer>
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

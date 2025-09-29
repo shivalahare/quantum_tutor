@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Circuit - Quantum Tutor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/circuits.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="circuit-create-container">
+    <div class="page-header">
+        <h1>Create Quantum Circuit</h1>
+        <p>Design and build your quantum circuits with Qiskit code</p>
+    </div>
+
+    <div class="create-layout">
+        <!-- Main Form -->
+        <div class="form-section">
+            <form id="circuitForm" class="circuit-form card">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="title" class="form-label">Circuit Title</label>
+                    <input type="text" id="title" name="title" class="form-input" 
+                           placeholder="Enter a descriptive title for your circuit" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="qiskit_code" class="form-label">Qiskit Code</label>
+                    <div class="code-editor-container">
+                        <textarea id="qiskit_code" name="qiskit_code" class="form-textarea code-editor" 
+                                  placeholder="Enter your Qiskit Python code here..." required rows="15">from qiskit import QuantumCircuit
+
+# Create a quantum circuit with 2 qubits and 2 classical bits
+qc = QuantumCircuit(2, 2)
+
+# Add quantum gates
+qc.h(0)  # Hadamard gate on qubit 0
+qc.cx(0, 1)  # CNOT gate with control qubit 0 and target qubit 1
+qc.measure([0, 1], [0, 1])  # Measure qubits to classical bits</textarea>
+                        <div class="editor-toolbar">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="formatCode()">
+                                <span class="btn-icon">🔧</span>
+                                Format
+                            </button>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="clearCode()">
+                                <span class="btn-icon">🗑️</span>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="btn-icon">⚡</span>
+                        Create Circuit
+                    </button>
+                    <button type="button" id="previewBtn" class="btn btn-outline btn-lg">
+                        <span class="btn-icon">👁️</span>
+                        Preview Circuit
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div class="preview-card card">
+                <h3>Circuit Preview</h3>
+                <div class="preview-content">
+                    <div id="circuitDiagram" class="circuit-diagram">
+                        <div class="preview-placeholder">
+                            <div class="placeholder-icon">⚛</div>
+                            <p>Circuit preview will appear here</p>
+                            <small>Enter your Qiskit code and click "Preview Circuit"</small>
+                        </div>
+                    </div>
+                    
+                    <div id="gateList" class="gate-list">
+                        <h4>Detected Gates</h4>
+                        <div class="gates-container">
+                            <div class="gate-placeholder">
+                                No gates detected yet
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Examples -->
+            <div class="examples-card card">
+                <h3>Quick Examples</h3>
+                <div class="examples-list">
+                    <div class="example-item" onclick="loadExample('bell_state')">
+                        <h4>Bell State</h4>
+                        <p>Create quantum entanglement</p>
+                        <span class="example-badge">2 qubits</span>
+                    </div>
+                    <div class="example-item" onclick="loadExample('superposition')">
+                        <h4>Superposition</h4>
+                        <p>Simple Hadamard gate</p>
+                        <span class="example-badge">1 qubit</span>
+                    </div>
+                    <div class="example-item" onclick="loadExample('quantum_teleportation')">
+                        <h4>Quantum Teleportation</h4>
+                        <p>Advanced protocol</p>
+                        <span class="example-badge">3 qubits</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/circuits.js' %}"></script>
+{% endblock %}

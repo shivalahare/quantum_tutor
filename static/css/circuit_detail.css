@@ -1,0 +1,444 @@
+/* Circuit Detail Specific Styles - Dark Theme */
+.circuit-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Circuit Header - Dark Theme */
+.circuit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: var(--dark-surface);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--dark-border);
+}
+
+.header-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.circuit-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Circuit Content */
+.circuit-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Circuit Diagram Section - Dark Theme */
+.circuit-diagram-section {
+    padding: 2rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.circuit-diagram-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+.diagram-container {
+    min-height: 300px;
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 1px solid var(--dark-border);
+}
+
+.diagram-placeholder {
+    text-align: center;
+    color: var(--dark-text-muted);
+}
+
+.diagram-placeholder .placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.diagram-placeholder h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+}
+
+/* Circuit Info Grid */
+.circuit-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+/* Gates Section - Dark Theme */
+.gates-section {
+    padding: 1.5rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.gates-section h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+.gates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.gate-item {
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid var(--primary);
+    transition: var(--transition);
+    border: 1px solid var(--dark-border);
+}
+
+.gate-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary);
+}
+
+.gate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.gate-type {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.gate-step {
+    font-size: 0.875rem;
+    color: var(--dark-text-muted);
+    font-weight: 500;
+}
+
+.gate-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.gate-qubits {
+    font-size: 0.875rem;
+    color: var(--dark-text);
+    font-weight: 500;
+}
+
+.gate-params {
+    font-size: 0.75rem;
+    color: var(--dark-text-muted);
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+/* Code Section - Dark Theme */
+.code-section {
+    padding: 1.5rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.code-section h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+.code-container {
+    background: #1a1b26;
+    border-radius: 8px;
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--dark-border);
+}
+
+.code-container pre {
+    margin: 0;
+    color: #c0caf5;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.code-container code {
+    background: none;
+    padding: 0;
+}
+
+/* Simulation Section - Dark Theme */
+.simulation-section {
+    padding: 2rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.simulation-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+.simulation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.statevector-section h3,
+.probabilities-section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.statevector-list,
+.probabilities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.state-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--dark-surface-light);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary);
+    transition: var(--transition);
+    border: 1px solid var(--dark-border);
+}
+
+.state-item.highlight {
+    background: var(--primary);
+    color: white;
+}
+
+.state-item.highlight .state-label,
+.state-item.highlight .state-amplitude,
+.state-item.highlight .state-probability {
+    color: white;
+}
+
+.state-label {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--dark-text);
+}
+
+.state-amplitude {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.875rem;
+    color: var(--dark-text-muted);
+    flex: 1;
+    text-align: center;
+}
+
+.state-probability {
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 60px;
+    text-align: right;
+}
+
+.probability-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--dark-surface-light);
+    border-radius: 6px;
+    border: 1px solid var(--dark-border);
+}
+
+.probability-bar-container {
+    flex: 1;
+    background: var(--dark-border);
+    border-radius: 4px;
+    height: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.probability-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.probability-value {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Empty States - Dark Theme */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--dark-text-muted);
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .circuit-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .simulation-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .circuit-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+    
+    .header-actions {
+        justify-content: center;
+    }
+    
+    .circuit-meta {
+        justify-content: center;
+    }
+    
+    .circuit-diagram-section,
+    .gates-section,
+    .code-section,
+    .simulation-section {
+        padding: 1rem;
+    }
+    
+    .header-content h1 {
+        font-size: 2rem;
+    }
+    
+    .diagram-container {
+        padding: 1rem;
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .circuit-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .header-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .state-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .probability-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .probability-bar-container {
+        width: 100%;
+    }
+}

@@ -1,0 +1,15 @@
+django
+djangorestframework
+django-cors-headers
+psycopg2-binary
+python-dotenv
+qiskit
+qiskit-aer
+qiskit-ibm-runtime
+openai
+anthropic
+matplotlib
+pillow
+gunicorn
+celery
+redis

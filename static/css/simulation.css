@@ -1,0 +1,265 @@
+/* Simulation Styles - Dark Theme */
+.simulation-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.simulation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: var(--dark-surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--dark-border);
+}
+
+.simulation-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Simulation Content */
+.simulation-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Results Sections - Dark Theme */
+.results-section,
+.chart-section,
+.counts-section {
+    padding: 2rem;
+    background: var(--dark-surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--dark-border);
+}
+
+.results-section h2,
+.chart-section h2,
+.counts-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+/* Statevector Grid - Dark Theme */
+.statevector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.state-card {
+    background: var(--dark-surface-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    transition: var(--transition);
+    border-left: 4px solid var(--primary);
+}
+
+.state-card.highlight {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+.state-card.highlight .state-basis,
+.state-card.highlight .state-probability,
+.state-card.highlight .state-amplitude {
+    color: white;
+}
+
+.state-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.state-basis {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--dark-text);
+}
+
+.state-probability {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.state-amplitude {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.9rem;
+    color: var(--dark-text-muted);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.probability-visual {
+    height: 8px;
+    background: var(--dark-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.probability-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+/* Chart Container - Dark Theme */
+.chart-container {
+    background: var(--dark-surface-light);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Counts Grid - Dark Theme */
+.counts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.count-item {
+    background: var(--dark-surface-light);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    border-left: 4px solid var(--secondary);
+}
+
+.count-state {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.count-bar-container {
+    background: var(--dark-border);
+    border-radius: 4px;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.count-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--secondary), var(--success));
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.count-value {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* No Simulation State - Dark Theme */
+.no-simulation {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--border-radius);
+}
+
+.no-simulation-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.no-simulation-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+    color: var(--dark-text-muted);
+}
+
+.no-simulation h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.no-simulation p {
+    color: var(--dark-text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .simulation-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .simulation-header h1 {
+        font-size: 2rem;
+    }
+    
+    .results-section,
+    .chart-section,
+    .counts-section {
+        padding: 1.5rem;
+    }
+    
+    .statevector-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .counts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-container {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .state-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .state-basis,
+    .state-probability {
+        font-size: 1rem;
+    }
+}

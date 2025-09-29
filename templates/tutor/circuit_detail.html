@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ circuit.title }} - Quantum Tutor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/circuit_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="circuit-detail-container">
+    <div class="circuit-header">
+        <div class="header-content">
+            <h1>{{ circuit.title }}</h1>
+            <div class="circuit-meta">
+                <span class="meta-item">{{ circuit.num_qubits }} Qubits</span>
+                <span class="meta-item">{{ circuit.num_classical_bits }} Classical Bits</span>
+                <span class="meta-item">{{ circuit.gates.count }} Gates</span>
+                <span class="meta-item">Created: {{ circuit.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button onclick="parseCircuit()" class="btn btn-primary">
+                <span class="btn-icon">🔧</span>
+                Parse Circuit
+            </button>
+            <button onclick="runSimulation()" class="btn btn-success">
+                <span class="btn-icon">⚡</span>
+                Run Simulation
+            </button>
+            <a href="{% url 'qa' %}?circuit_id={{ circuit.id }}" class="btn btn-secondary">
+                <span class="btn-icon">🤖</span>
+                Ask AI Tutor
+            </a>
+        </div>
+    </div>
+
+    <div class="circuit-content">
+        <!-- Circuit Diagram -->
+        <div class="circuit-diagram-section card">
+            <h2>Circuit Diagram</h2>
+            <div class="diagram-container">
+                {% if circuit.circuit_diagram_svg %}
+                    {{ circuit.circuit_diagram_svg|safe }}
+                {% else %}
+                <div class="diagram-placeholder">
+                    <div class="placeholder-icon">⚛</div>
+                    <h3>No Diagram Generated</h3>
+                    <p>Click "Parse Circuit" to generate the circuit diagram</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Circuit Information -->
+        <div class="circuit-info-grid">
+            <!-- Gates List -->
+            <div class="gates-section card">
+                <h2>Circuit Gates</h2>
+                {% if circuit.gates.all %}
+                <div class="gates-list">
+                    {% for gate in circuit.gates.all %}
+                    <div class="gate-item">
+                        <div class="gate-header">
+                            <span class="gate-type">{{ gate.gate_type|upper }}</span>
+                            <span class="gate-step">Step {{ gate.step_order }}</span>
+                        </div>
+                        <div class="gate-details">
+                            <span class="gate-qubits">Qubits: {{ gate.qubits }}</span>
+                            {% if gate.parameters %}
+                            <span class="gate-params">Parameters: {{ gate.parameters }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🔧</div>
+                    <p>No gates parsed yet</p>
+                    <button onclick="parseCircuit()" class="btn btn-outline">Parse Circuit</button>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Qiskit Code -->
+            <div class="code-section card">
+                <h2>Qiskit Code</h2>
+                <div class="code-container">
+                    <pre><code class="language-python">{{ circuit.qiskit_code }}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation Results -->
+        {% if circuit.simulation %}
+        <div class="simulation-section card">
+            <h2>Simulation Results</h2>
+            <div class="simulation-grid">
+                <div class="statevector-section">
+                    <h3>Quantum Statevector</h3>
+                    <div class="statevector-list">
+                        {% for state in circuit.simulation.statevector %}
+                        <div class="state-item {% if state.probability > 0.1 %}highlight{% endif %}">
+                            <span class="state-label">|{{ state.state }}⟩</span>
+                            <span class="state-amplitude">
+                                {{ state.amplitude_real|floatformat:4 }} + {{ state.amplitude_imag|floatformat:4 }}i
+                            </span>
+                            <span class="state-probability">{{ state.probability|floatformat:4 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="probabilities-section">
+                    <h3>Measurement Probabilities</h3>
+                    <div class="probabilities-list">
+                        {% for state, prob in circuit.simulation.probabilities.items %}
+                        <div class="probability-item">
+                            <span class="state-label">|{{ state }}⟩</span>
+                            <div class="probability-bar-container">
+                                <div class="probability-bar" style="width: {{ prob|floatformat:2 }}%"></div>
+                                <span class="probability-value">{{ prob|floatformat:4 }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'tutor/js/circuits.js' %}"></script>
+<script>
+async function parseCircuit() {
+    const circuitId = {{ circuit.id }};
+    const button = event.target;
+    
+    try {
+        setLoading(button, true);
+        const response = await fetch(`/api/circuits/${circuitId}/parse_circuit/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast('Circuit parsed successfully! Found ' + data.num_gates + ' gates.', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            throw new Error(data.error || 'Failed to parse circuit');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Error parsing circuit: ' + error.message, 'error');
+    } finally {
+        setLoading(button, false);
+    }
+}
+
+async function runSimulation() {
+    const circuitId = {{ circuit.id }};
+    const button = event.target;
+    
+    try {
+        setLoading(button, true);
+        
+        // First, ensure the circuit is parsed
+        const parseResponse = await fetch(`/api/circuits/${circuitId}/parse_circuit/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        if (!parseResponse.ok) {
+            const parseError = await parseResponse.json();
+            throw new Error('Circuit parsing failed: ' + (parseError.error || 'Unknown error'));
+        }
+        
+        // Then run simulation
+        const response = await fetch(`/api/circuits/${circuitId}/simulate/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showToast(`Simulation completed! ${data.statevector_count} states, ${data.probability_count} probabilities`, 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            throw new Error(data.error || 'Failed to run simulation');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        
+        // Provide more user-friendly error messages
+        let userMessage = error.message;
+        if (error.message.includes('statevector')) {
+            userMessage = 'Statevector simulation failed. Try removing measurement operations or using a simpler circuit.';
+        } else if (error.message.includes('measurement')) {
+            userMessage = 'Measurement simulation failed. Please check your circuit for errors.';
+        }
+        
+        showToast('Error running simulation: ' + userMessage, 'error');
+    } finally {
+        setLoading(button, false);
+    }
+}
+</script>
+{% endblock %}

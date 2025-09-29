@@ -1,0 +1,82 @@
+{% extends 'tutor/base.html' %}
+
+{% block title %}Dashboard - Quantum Tutor{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Welcome Card -->
+    <div class="col-span-3 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Welcome to Quantum Tutor!</h2>
+        <p class="text-gray-600 mb-4">
+            Your AI-powered quantum computing learning platform. 
+            Current difficulty level: <strong>{{ user.difficulty_level }}</strong>
+        </p>
+        <div class="flex space-x-4">
+            <a href="{% url 'circuit_create' %}" 
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+               Create New Circuit
+            </a>
+        </div>
+    </div>
+
+    <!-- Circuits List -->
+    <div class="col-span-2 bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-bold mb-4">Your Quantum Circuits</h3>
+        
+        {% if circuits %}
+            <div class="space-y-4">
+                {% for circuit in circuits %}
+                    <div class="border rounded-lg p-4 hover:bg-gray-50">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="font-semibold">{{ circuit.title }}</h4>
+                                <p class="text-sm text-gray-600">
+                                    {{ circuit.num_qubits }} qubits, 
+                                    {{ circuit.gates.count }} gates
+                                </p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="{% url 'circuit_detail' circuit.id %}" 
+                                   class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+                                   View
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500">
+                            Created: {{ circuit.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-600">No circuits yet. Create your first quantum circuit!</p>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-bold mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+            <a href="{% url 'circuit_create' %}" 
+               class="block w-full bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700">
+               Create Circuit
+            </a>
+            <button class="block w-full bg-green-600 text-white text-center py-2 rounded hover:bg-green-700">
+                Take Quiz
+            </button>
+            <button class="block w-full bg-purple-600 text-white text-center py-2 rounded hover:bg-purple-700">
+                Ask AI Tutor
+            </button>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mt-6">
+            <h4 class="font-semibold mb-2">Recent Activity</h4>
+            <div class="text-sm text-gray-600 space-y-1">
+                <p>• Last login: {{ user.last_login|date:"M d, Y H:i" }}</p>
+                <p>• Circuits created: {{ circuits.count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'tutor/base.html' %}
+
+{% block title %}{{ circuit.title }} - Quantum Tutor{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">{{ circuit.title }}</h2>
+        <div class="flex space-x-2">
+            <button onclick="parseCircuit()" 
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Parse Circuit
+            </button>
+            <button onclick="runSimulation()" 
+                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Run Simulation
+            </button>
+            <a href="{% url 'qa' %}?circuit_id={{ circuit.id }}" 
+               class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                Ask AI Tutor
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Circuit Diagram -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Circuit Diagram</h3>
+            {% if circuit.circuit_diagram_svg %}
+                <div class="border rounded p-4 bg-white overflow-auto">
+                    {{ circuit.circuit_diagram_svg|safe }}
+                </div>
+            {% else %}
+                <div class="border rounded p-4 bg-gray-50 text-center">
+                    <p class="text-gray-600">No diagram generated yet. Click "Parse Circuit" to generate.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Circuit Information -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Circuit Information</h3>
+            <div class="space-y-3">
+                <div>
+                    <strong>Qubits:</strong> {{ circuit.num_qubits }}
+                </div>
+                <div>
+                    <strong>Classical Bits:</strong> {{ circuit.num_classical_bits }}
+                </div>
+                <div>
+                    <strong>Gates:</strong> {{ circuit.gates.count }}
+                </div>
+                <div>
+                    <strong>Created:</strong> {{ circuit.created_at|date:"M d, Y H:i" }}
+                </div>
+            </div>
+
+            <!-- Gates List -->
+            <div class="mt-6">
+                <h4 class="font-semibold mb-3">Gates in Circuit</h4>
+                {% if circuit.gates.all %}
+                    <div class="space-y-2">
+                        {% for gate in circuit.gates.all %}
+                            <div class="border-l-4 border-blue-500 pl-3 py-1">
+                                <div class="flex justify-between">
+                                    <span class="font-mono">{{ gate.gate_type }}</span>
+                                    <span class="text-sm text-gray-600">Step {{ gate.step_order }}</span>
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    Qubits: {{ gate.qubits }}
+                                    {% if gate.parameters %} | Params: {{ gate.parameters }}{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">No gates parsed yet. Click "Parse Circuit" to extract gates.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Qiskit Code -->
+    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+        <h3 class="text-xl font-bold mb-4">Qiskit Code</h3>
+        <pre class="bg-gray-100 p-4 rounded overflow-x-auto text-sm"><code>{{ circuit.qiskit_code }}</code></pre>
+    </div>
+
+    <!-- Simulation Results -->
+    {% if circuit.simulation %}
+    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+        <h3 class="text-xl font-bold mb-4">Simulation Results</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Statevector -->
+            <div>
+                <h4 class="font-semibold mb-2">Statevector</h4>
+                <div class="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto">
+                    {% for state in circuit.simulation.statevector %}
+                    <div class="font-mono text-sm">
+                        |{{ state.state }}⟩: {{ state.amplitude_real|floatformat:4 }} + {{ state.amplitude_imag|floatformat:4 }}i
+                        (Prob: {{ state.probability|floatformat:4 }})
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Probabilities -->
+            <div>
+                <h4 class="font-semibold mb-2">Measurement Probabilities</h4>
+                <div class="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto">
+                    {% for state, prob in circuit.simulation.probabilities.items %}
+                    <div class="font-mono text-sm">
+                        |{{ state }}⟩: {{ prob|floatformat:4 }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Get CSRF token function
+function getCSRFToken() {
+    const name = 'csrftoken';
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function parseCircuit() {
+    const circuitId = {{ circuit.id }};
+    
+    try {
+        const response = await fetch(`/api/circuits/${circuitId}/parse_circuit/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Circuit parsed successfully! Found ' + data.num_gates + ' gates.');
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error parsing circuit: ' + error.message);
+    }
+}
+
+async function runSimulation() {
+    const circuitId = {{ circuit.id }};
+    
+    try {
+        const response = await fetch(`/api/circuits/${circuitId}/simulate/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Simulation completed successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error running simulation: ' + error.message);
+    }
+}
+</script>
+{% endblock %}

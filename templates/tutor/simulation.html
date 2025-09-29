@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Simulation - {{ circuit.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/simulation.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="simulation-container">
+    <div class="simulation-header">
+        <h1>Simulation Results: {{ circuit.title }}</h1>
+        <a href="{% url 'circuit_detail' circuit.id %}" class="btn btn-outline">
+            ← Back to Circuit
+        </a>
+    </div>
+
+    {% if simulation %}
+    <div class="simulation-content">
+        <!-- Statevector Section -->
+        <div class="results-section card">
+            <h2>Quantum Statevector</h2>
+            <div class="statevector-grid">
+                {% for state in simulation.statevector %}
+                <div class="state-card {% if state.probability > 0.1 %}highlight{% endif %}">
+                    <div class="state-header">
+                        <span class="state-basis">|{{ state.state }}⟩</span>
+                        <span class="state-probability">{{ state.probability|floatformat:4 }}</span>
+                    </div>
+                    <div class="state-amplitude">
+                        {{ state.amplitude_real|floatformat:4 }} + {{ state.amplitude_imag|floatformat:4 }}i
+                    </div>
+                    <div class="probability-visual">
+                        <div class="probability-bar" style="width: {{ state.probability|multiply:100|floatformat:2 }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Probabilities Chart -->
+        <div class="chart-section card">
+            <h2>Measurement Probabilities</h2>
+            <div class="chart-container">
+                <canvas id="probabilityChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Measurement Counts -->
+        <div class="counts-section card">
+            <h2>Measurement Counts ({{ simulation.shots }} shots)</h2>
+            <div class="counts-grid">
+                {% for state, count in simulation.counts.items %}
+                <div class="count-item">
+                    <span class="count-state">|{{ state }}⟩</span>
+                    <div class="count-bar-container">
+                        <div class="count-bar" style="width: {{ count|divide:simulation.shots|multiply:100|floatformat:2 }}%"></div>
+                        <span class="count-value">{{ count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="no-simulation card">
+        <div class="no-simulation-content">
+            <div class="no-simulation-icon">🔬</div>
+            <h2>No Simulation Results</h2>
+            <p>Run the simulation first from the circuit detail page to see the results.</p>
+            <a href="{% url 'circuit_detail' circuit.id %}" class="btn btn-primary">
+                Go to Circuit
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/circuits.js' %}"></script>
+{% if simulation %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('probabilityChart').getContext('2d');
+    const labels = [{% for state, prob in simulation.probabilities.items %}'|{{ state }}⟩'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const data = [{% for state, prob in simulation.probabilities.items %}{{ prob }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+    
+    // Chart.js dark theme configuration
+    Chart.defaults.color = '#e2e8f0';
+    Chart.defaults.borderColor = '#374151';
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Probability',
+                data: data,
+                backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                borderColor: 'rgba(139, 92, 246, 1)',
+                borderWidth: 2,
+                borderRadius: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Measurement Probabilities',
+                    color: '#e2e8f0'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1.0,
+                    title: {
+                        display: true,
+                        text: 'Probability',
+                        color: '#e2e8f0'
+                    },
+                    grid: {
+                        color: '#374151'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Quantum States',
+                        color: '#e2e8f0'
+                    },
+                    grid: {
+                        color: '#374151'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

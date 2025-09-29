@@ -1,0 +1,275 @@
+/* Circuit Creation Styles - Dark Theme */
+.circuit-create-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-header p {
+    font-size: 1.2rem;
+    color: var(--dark-text-muted);
+}
+
+.create-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+}
+
+/* Form Section - Dark Theme */
+.form-section {
+    min-height: 600px;
+}
+
+.circuit-form {
+    padding: 2rem;
+    height: 100%;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.code-editor-container {
+    position: relative;
+}
+
+.code-editor {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    background: #1a1b26;
+    color: #c0caf5;
+    border: 2px solid var(--dark-border);
+    border-radius: 8px;
+}
+
+.code-editor:focus {
+    border-color: var(--primary);
+    background: #1a1b26;
+    color: #c0caf5;
+}
+
+.editor-toolbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+/* Preview Section - Dark Theme */
+.preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.preview-card,
+.examples-card {
+    padding: 1.5rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+}
+
+.preview-card h3,
+.examples-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.circuit-diagram {
+    min-height: 200px;
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--dark-border);
+}
+
+.preview-placeholder {
+    text-align: center;
+    color: var(--dark-text-muted);
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.gate-list h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--dark-text);
+}
+
+.gates-container {
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 100px;
+    border: 1px solid var(--dark-border);
+}
+
+.gate-placeholder {
+    text-align: center;
+    color: var(--dark-text-muted);
+    padding: 2rem 1rem;
+}
+
+/* Examples - Dark Theme */
+.examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.example-item {
+    padding: 1rem;
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.example-item:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateX(5px);
+    border-color: var(--primary);
+}
+
+.example-item h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: inherit;
+}
+
+.example-item p {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+    color: inherit;
+}
+
+.example-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Circuit Diagram Styles - Dark Theme */
+.circuit-svg {
+    width: 100%;
+    height: auto;
+    background: var(--dark-surface);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--dark-border);
+}
+
+.gate-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--dark-surface-light);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--primary);
+    border: 1px solid var(--dark-border);
+}
+
+.gate-type {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.gate-qubits {
+    font-size: 0.875rem;
+    color: var(--dark-text);
+}
+
+.gate-params {
+    font-size: 0.75rem;
+    color: var(--dark-text-muted);
+    margin-left: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .create-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .preview-section {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .circuit-form {
+        padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .editor-toolbar {
+        position: static;
+        margin-top: 0.5rem;
+        justify-content: flex-end;
+    }
+}

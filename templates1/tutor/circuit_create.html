@@ -1,0 +1,133 @@
+{% extends 'tutor/base.html' %}
+
+{% block title %}Create Circuit - Quantum Tutor{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6">Create Quantum Circuit</h2>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form id="circuitForm">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                    Circuit Title
+                </label>
+                <input type="text" id="title" name="title" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Enter circuit title" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="qiskit_code" class="block text-sm font-medium text-gray-700 mb-2">
+                    Qiskit Code
+                </label>
+                <textarea id="qiskit_code" name="qiskit_code" rows="12"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                          placeholder="Enter your Qiskit Python code here..." required>from qiskit import QuantumCircuit
+
+# Create a quantum circuit with 2 qubits and 2 classical bits
+qc = QuantumCircuit(2, 2)
+
+# Add quantum gates
+qc.h(0)  # Hadamard gate on qubit 0
+qc.cx(0, 1)  # CNOT gate with control qubit 0 and target qubit 1
+qc.measure([0, 1], [0, 1])  # Measure qubits to classical bits</textarea>
+            </div>
+
+            <div class="flex space-x-4">
+                <button type="submit" 
+                        class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Create Circuit
+                </button>
+                <button type="button" id="previewBtn"
+                        class="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                    Preview
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Preview Section -->
+    <div id="previewSection" class="bg-white rounded-lg shadow-md p-6 mt-6 hidden">
+        <h3 class="text-xl font-bold mb-4">Circuit Preview</h3>
+        <div id="circuitDiagram" class="border rounded p-4 bg-gray-50"></div>
+        <div id="gateList" class="mt-4"></div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+// Get CSRF token function
+function getCSRFToken() {
+    const name = 'csrftoken';
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.getElementById('circuitForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('title').value;
+    const qiskit_code = document.getElementById('qiskit_code').value;
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    submitBtn.textContent = 'Creating...';
+    submitBtn.disabled = true;
+    
+    try {
+        const response = await fetch('/api/circuits/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title,
+                qiskit_code: qiskit_code
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            window.location.href = `/circuits/${data.id}/`;
+        } else {
+            alert('Error creating circuit: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error creating circuit: ' + error.message);
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+document.getElementById('previewBtn').addEventListener('click', function() {
+    const code = document.getElementById('qiskit_code').value;
+    const title = document.getElementById('title').value;
+    
+    if (!code || !title) {
+        alert('Please enter both title and Qiskit code');
+        return;
+    }
+    
+    document.getElementById('previewSection').classList.remove('hidden');
+    document.getElementById('circuitDiagram').innerHTML = 
+        '<p class="text-gray-600">Circuit preview will be generated after parsing.</p>';
+});
+</script>
+{% endblock %}

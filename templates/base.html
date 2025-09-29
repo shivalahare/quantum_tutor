@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quantum Tutor - AI Quantum Computing Tutor{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">⚛</span>
+                <span class="logo-text">Quantum Tutor</span>
+            </div>
+            <div class="nav-menu">
+                {% if user.is_authenticated %}
+                <div class="nav-user">
+                    <span class="user-info">{{ user.username }} ({{ user.difficulty_level }})</span>
+                    <div class="nav-links">
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'circuit_create' %}" class="nav-link">Create Circuit</a>
+                        <a href="{% url 'qa' %}" class="nav-link">Ask AI Tutor</a>
+                        <a href="#" class="nav-link logout">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="nav-link login">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Quantum Tutor. AI-Powered Quantum Computing Education.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

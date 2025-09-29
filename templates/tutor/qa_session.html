@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ask AI Tutor - Quantum Tutor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/qa.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="qa-container">
+    <div class="qa-header">
+        <h1>Ask AI Quantum Tutor</h1>
+        <p>Get expert explanations about quantum computing concepts and circuits</p>
+    </div>
+
+    <div class="qa-layout">
+        <!-- Main Q&A Section -->
+        <div class="qa-main">
+            <!-- Question Form -->
+            <div class="question-form-section card">
+                <h2>Ask a Question</h2>
+                <form id="qaForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="circuit_select" class="form-label">Circuit Context (Optional)</label>
+                        <select id="circuit_select" name="circuit_id" class="form-select">
+                            <option value="">No specific circuit</option>
+                            {% for circuit in circuits %}
+                            <option value="{{ circuit.id }}">{{ circuit.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question" class="form-label">Your Question</label>
+                        <textarea id="question" name="question" class="form-textarea" 
+                                  placeholder="Ask anything about quantum computing, circuits, gates, or quantum mechanics..."
+                                  rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="btn-icon">🤖</span>
+                        Ask AI Tutor
+                    </button>
+                </form>
+            </div>
+
+            <!-- Answer Display -->
+            <div id="answerSection" class="answer-section card hidden">
+                <div class="answer-header">
+                    <h2>AI Tutor Response</h2>
+                    <div class="answer-actions">
+                        <button onclick="copyAnswer()" class="btn btn-outline btn-sm">
+                            <span class="btn-icon">📋</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div id="answerContent" class="answer-content"></div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="qa-sidebar">
+            <!-- Recent Questions -->
+            <div class="recent-questions card">
+                <h3>Recent Questions</h3>
+                {% if qa_sessions %}
+                <div class="questions-list">
+                    {% for session in qa_sessions %}
+                    <div class="question-item" data-session-id="{{ session.id }}">
+                        <div class="question-meta">
+                            <span class="question-time">{{ session.created_at|timesince }} ago</span>
+                            {% if session.circuit %}
+                            <span class="question-circuit">{{ session.circuit.title }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="question-text">{{ session.question|truncatewords:12 }}</div>
+                        <button onclick="loadSession({{ session.id }})" class="btn-link">
+                            View Full Conversation
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-recent">
+                    <div class="empty-icon">💬</div>
+                    <p>No recent questions</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="tips-card card">
+                <h3>💡 Tips for Better Answers</h3>
+                <ul class="tips-list">
+                    <li>Be specific about quantum concepts</li>
+                    <li>Mention your difficulty level</li>
+                    <li>Reference specific gates or circuits</li>
+                    <li>Ask for analogies if needed</li>
+                    <li>Request mathematical explanations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Modal -->
+<div id="sessionModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Q&A Conversation</h3>
+            <button onclick="closeModal()" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="modalQuestion" class="modal-question"></div>
+            <div id="modalAnswer" class="modal-answer"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/qa.js' %}"></script>
+{% endblock %}
