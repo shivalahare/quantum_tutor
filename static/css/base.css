@@ -392,3 +392,119 @@ body {
         padding: 1rem 0.5rem;
     }
 }
+
+/* Add these to the existing button styles in base.css */
+
+/* Button size variations */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+.btn-xl {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Button state variations */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn:disabled:hover::before {
+    width: 0;
+    height: 0;
+}
+
+/* Loading button state */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Output and console specific styles */
+.output-console {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.code-block {
+    background: #1a1b26;
+    color: #c0caf5;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid var(--dark-border);
+    overflow-x: auto;
+}
+
+/* Plot container enhancements */
+.plot-container {
+    transition: transform 0.2s ease;
+}
+
+.plot-container:hover {
+    transform: translateY(-2px);
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+/* Card enhancements */
+.card {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--dark-border);
+    margin-bottom: 1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--dark-border);
+    background: var(--dark-surface-light);
+}

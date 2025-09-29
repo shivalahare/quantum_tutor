@@ -57,6 +57,86 @@
     gap: 2rem;
 }
 
+/* Execution Section - Dark Theme */
+.execution-section {
+    padding: 2rem;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--border-radius);
+}
+
+.execution-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--dark-text);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+}
+
+/* Output Console */
+.output-section {
+    margin-bottom: 2rem;
+}
+
+.output-section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.output-console {
+    background: #1a1b26;
+    color: #c0caf5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Plots Section */
+.plots-section {
+    margin-top: 2rem;
+}
+
+.plots-section h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.plot-container {
+    margin: 2rem 0;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--dark-surface-light);
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+}
+
+.plot-container h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.plot-container img {
+    max-width: 100%;
+    border: 1px solid var(--dark-border);
+    border-radius: 8px;
+    background: white;
+    box-shadow: var(--shadow);
+}
+
 /* Circuit Diagram Section - Dark Theme */
 .circuit-diagram-section {
     padding: 2rem;
@@ -366,6 +446,21 @@
     margin-bottom: 1.5rem;
 }
 
+/* Loading States */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    z-index: 10;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .circuit-info-grid {
@@ -375,6 +470,10 @@
     .simulation-grid {
         grid-template-columns: 1fr;
     }
+    
+    .header-actions {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 768px) {
@@ -382,6 +481,7 @@
         flex-direction: column;
         gap: 1.5rem;
         text-align: center;
+        padding: 1.5rem;
     }
     
     .header-actions {
@@ -395,7 +495,8 @@
     .circuit-diagram-section,
     .gates-section,
     .code-section,
-    .simulation-section {
+    .simulation-section,
+    .execution-section {
         padding: 1rem;
     }
     
@@ -406,6 +507,11 @@
     .diagram-container {
         padding: 1rem;
         min-height: 200px;
+    }
+    
+    .output-console {
+        padding: 1rem;
+        font-size: 0.8rem;
     }
 }
 
@@ -440,5 +546,11 @@
     
     .probability-bar-container {
         width: 100%;
+    }
+    
+    .gate-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
     }
 }

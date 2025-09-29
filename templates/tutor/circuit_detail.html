@@ -19,6 +19,7 @@
                 <span class="meta-item">Created: {{ circuit.created_at|date:"M d, Y" }}</span>
             </div>
         </div>
+            <!-- Add to header actions -->
         <div class="header-actions">
             <button onclick="parseCircuit()" class="btn btn-primary">
                 <span class="btn-icon">🔧</span>
@@ -28,7 +29,11 @@
                 <span class="btn-icon">⚡</span>
                 Run Simulation
             </button>
-            <a href="{% url 'qa' %}?circuit_id={{ circuit.id }}" class="btn btn-secondary">
+            <button onclick="executeCode()" class="btn btn-secondary">
+                <span class="btn-icon">🚀</span>
+                Execute Code
+            </button>
+            <a href="{% url 'qa' %}?circuit_id={{ circuit.id }}" class="btn btn-outline">
                 <span class="btn-icon">🤖</span>
                 Ask AI Tutor
             </a>
@@ -125,26 +130,28 @@
                         {% endfor %}
                     </div>
                 </div>
-                <!-- Add this section to display code execution results -->
-                <div class="execution-results card" style="display: none;" id="executionResults">
-                    <h2>Code Execution Results</h2>
-                    <div class="output-section">
-                        <h3>Text Output:</h3>
-                        <pre id="textOutput" class="output-console"></pre>
-                    </div>
-                    <div class="plots-section" id="plotsSection">
-                        <h3>Generated Plots:</h3>
-                        <!-- Plots will be inserted here -->
-                    </div>
-                </div>
             </div>
         </div>
         {% endif %}
+        <!-- Add execution results section -->
+        <div class="execution-section card" style="margin-top: 2rem;">
+            <h2>Code Execution Results</h2>
+            <div id="executionResults">
+                <div class="output-section" id="textOutputSection" style="display: none;">
+                    <h3>Output:</h3>
+                    <pre id="textOutput" class="output-console" style="background: #1a1b26; color: #c0caf5; padding: 1rem; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; font-family: monospace;"></pre>
+                </div>
+                <div class="plots-section" id="plotsSection" style="display: none;">
+                    <h3>Generated Plots:</h3>
+                    <div id="plotsContainer"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 {% block extra_js %}
-<script src="{% static 'tutor/js/circuits.js' %}"></script>
+<script src="{% static 'js/circuits.js' %}"></script>
 <script>
 async function parseCircuit() {
     const circuitId = {{ circuit.id }};
@@ -251,20 +258,33 @@ async function executeCode() {
         
         if (response.ok) {
             // Show text output
-            document.getElementById('textOutput').textContent = data.text_output;
+            const textOutput = document.getElementById('textOutput');
+            const textOutputSection = document.getElementById('textOutputSection');
             
-            // Show plots
-            const plotsSection = document.getElementById('plotsSection');
-            if (data.plots && data.plots.length > 0) {
-                plotsSection.innerHTML = '<h3>Generated Plots:</h3>' + data.plots.join('');
+            if (data.text_output && data.text_output.trim()) {
+                textOutput.textContent = data.text_output;
+                textOutputSection.style.display = 'block';
             } else {
-                plotsSection.innerHTML = '<h3>Generated Plots:</h3><p>No plots generated</p>';
+                textOutput.textContent = 'No output generated';
+                textOutputSection.style.display = 'block';
             }
             
-            // Show results section
-            document.getElementById('executionResults').style.display = 'block';
+            // Show plots
+            const plotsContainer = document.getElementById('plotsContainer');
+            const plotsSection = document.getElementById('plotsSection');
+            
+            if (data.plots && (Array.isArray(data.plots) ? data.plots.length > 0 : !!data.plots)) {
+                plotsContainer.innerHTML = Array.isArray(data.plots) ? data.plots.join('') : data.plots;
+                plotsSection.style.display = 'block';
+            } else {
+                plotsContainer.innerHTML = '<p>No plots generated</p>';
+                plotsSection.style.display = 'block';
+            }
             
             showToast('Code executed successfully!', 'success');
+            
+            // Scroll to results
+            document.getElementById('executionResults').scrollIntoView({ behavior: 'smooth' });
         } else {
             throw new Error(data.error || 'Failed to execute code');
         }
